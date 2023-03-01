@@ -12,7 +12,7 @@ public class MyApplication extends Application {
 
     private List<Location> myLocations;
 
-    public List<Location> getMyLocations() {
+    public List<Location> getMyLocation() {
         return myLocations;
     }
 
@@ -20,11 +20,11 @@ public class MyApplication extends Application {
         this.myLocations = myLocations;
     }
 
-    public static MyApplication getInstance() {
+    public MyApplication getInstance(){
         return singleton;
     }
 
-    public void onCreate() {
+    public void onCreate(){
         super.onCreate();
         singleton = this;
         myLocations = new ArrayList<>();

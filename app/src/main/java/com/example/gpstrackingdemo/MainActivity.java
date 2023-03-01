@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         // how often does the location check occur when set to the most frequent update?
         locationRequest.setFastestInterval(1000 * FAST_UPDATE_INTERVAL);
 
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY);
 
         // event that is triggered whenever the update interval is met.
         locationCallBack = new LocationCallback() {
@@ -119,8 +120,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // add the new location to the global list
                 MyApplication myApplication = (MyApplication)getApplicationContext();
-                savedLocations = myApplication.getMyLocations();
+                savedLocations = myApplication.getMyLocation();
                 savedLocations.add(currentLocation);
+                Toast.makeText(myApplication, "Clicked", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -128,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
         btn_showWayPointList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ShowSavedLocationList.class);
+                 Intent i = new Intent(MainActivity.this, ShowSavedLocationsList.class);
+//                Intent i = new Intent(MainActivity.this, Hello.class);
                 startActivity(i);
             }
         });
@@ -146,10 +149,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (sw_gps.isChecked()) {
                     // most accurate - use GPS
-                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                    locationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
                     tv_sensor.setText("Using GPS sensors");
                 } else {
-                    locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                    locationRequest.setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY);
                     tv_sensor.setText("Using Towers + WIFI");
                 }
             }
@@ -225,8 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
 
-        if (ActivityCompat.checkSelfPermission(this,android.
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // user provided the permission
             fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
@@ -281,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
             tv_address.setText("Unable to get street address");
 
             MyApplication myApplication = (MyApplication)getApplicationContext();
-            savedLocations = myApplication.getMyLocations();
+            savedLocations = myApplication.getMyLocation();
 
             //show the number of waypoints saved.
             tv_wayPointCounts.setText(Integer.toString(savedLocations.size()));
